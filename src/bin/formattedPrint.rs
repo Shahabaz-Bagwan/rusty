@@ -1,3 +1,5 @@
+use core::fmt;
+
 fn main() {
     // In general, the `{}` will be automatically replaced with any
     // arguments. These will be stringified.
@@ -34,18 +36,23 @@ fn main() {
     println!("{number:0>width$}", number=1, width=5);
 
     // Rust even checks to make sure the correct number of arguments are used.
-    println!("My name is {0}, {1} {0}", "Bond");
+    println!("My name is {0}, {1} {0}", "James", "Bond");
     // FIXME ^ Add the missing argument: "James"
 
     // Only types that implement fmt::Display can be formatted with `{}`. User-
     // defined types do not implement fmt::Display by default.
 
-    #[allow(dead_code)] // disable `dead_code` which warn against unused module
+    // #[allow(dead_code)] // disable `dead_code` which warn against unused module
     struct Structure(i32);
+    impl fmt::Display for Structure  {
+        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+            write!(f, "{}", self.0)
+        }
+    }
 
     // This will not compile because `Structure` does not implement
     // fmt::Display.
-    // println!("This struct `{}` won't print...", Structure(3));
+    println!("This struct `{}` won't print...", Structure(3));
     // TODO ^ Try uncommenting this line
 
     // For Rust 1.58 and above, you can directly capture the argument from a
@@ -54,4 +61,7 @@ fn main() {
     let number: f64 = 1.0;
     let width: usize = 5;
     println!("{number:>width$}");
+
+    let pi = 3.141592;
+    println!("{pi:.3}");
 }
